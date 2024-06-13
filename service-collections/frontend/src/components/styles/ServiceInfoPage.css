@@ -1,0 +1,759 @@
+.header{
+  display: flex;
+    vertical-align: middle;
+    margin-left: 10px
+}
+body {
+    background-color: rgb(255,255,255); 
+    font-family: Arial, sans-serif; 
+  }
+
+.image-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 100px
+  }
+  
+  .service-logo {
+    width: 120px;
+    height: 120px; 
+    border: 2px solid rgb(255,255,255); 
+    border-radius: 10px; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .service-name {
+    display: inline-block;
+    vertical-align: top; 
+    margin-left: 10px; 
+    font-size: 26px; 
+    font-weight: bold; 
+    line-height: 0px; 
+    display: inline-block;
+  }
+
+  .back-button {
+    display: flex;
+    align-items: center;
+  }
+  
+  .back-button a {
+    text-decoration: none;
+  }
+  
+  .back-icon {
+    width: 20px; 
+    height: 20px;
+    margin-left: 10px;
+    margin-right: 10px; 
+  }
+  
+  .service-description{
+    margin-left: 100px;
+    font-size: 18px;
+  }
+  
+  .service-description::after {
+    content: '';
+    display: block;
+    width: calc(100% - 150px);
+    height: 1px;
+    background-color: rgba(153, 153, 153, 0.4);
+    margin-top: 10px;
+  }
+
+  .service-points-list {
+    list-style-type: none;
+  }
+
+  .service-uri {
+    background-color: #ffffff; 
+    border: none; 
+    color: rgb(0, 0, 0); 
+    padding: 10px 20px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    width: 200px;
+  }
+  
+  .service-uri:hover {
+    background-color: rgb(235,235,239);
+  }
+
+  .service-uri.active {
+    background-color: rgb(235,235,239);
+    color: rgb(0, 0, 0);
+  }
+  
+  .expanded-content {
+    position: absolute;
+    top: 300px;
+    left: 400px; 
+    background-color: white;
+    border-left: 1px solid rgba(153, 153, 153, 0.4);
+    padding: 10px;
+    z-index: 999;
+    width: 1500px;
+  }
+  .add-authorization-button {
+    display: flex;
+    align-self: center;
+  
+    margin: 5px 10px 5px auto;
+    
+    padding: 10px 20px;
+    max-height: 5%;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1e3985;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-authorization-button:hover {
+    background-color: #3e57a5;
+}
+  
+  .service-points-title,
+  .service-points-list {
+    margin-left: 100px;
+  }
+
+  .service-point-description{
+    margin-left: 25px;
+    font-size: 16px;
+    font-weight: normal;
+ }
+
+
+  .service-parameters-title{
+    margin-left: 25px;
+    font-size: 18px;
+  }
+
+  .service-parameters-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: 25px;
+  }
+
+  .service-parameters-table-column{
+    font-size: 14px;
+    font-weight: normal;
+    opacity: 0.9;
+  }
+
+  .parameter-info {
+    display: flex;
+    gap: 8px;
+  }
+
+  .parameter-required {
+    font-weight: bold;
+    color: #3541ab;
+    position: relative;
+    animation: pulse 2.5s infinite, pop-up 0.5s ease-out forwards;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      color: #3541ab;
+    }
+    50% {
+      transform: scale(1.004);
+      color: #464d8a;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+      transform: scale(1);
+      color: #3541ab;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  @keyframes pop-up {
+    0% {
+      transform: translateX(50px); 
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .parameter-type{
+    font-size: 16px;
+    font-weight: normal;
+    opacity: 0.7;
+  }
+
+  .service-parameters-table th,
+  .service-parameters-table td {
+    padding: 8px;
+    border-bottom: 1px solid black;
+  }
+  
+  .service-parameters-table th:nth-child(1),
+  .service-parameters-table td:nth-child(1) {
+    width: 110px;
+  }
+  
+  .service-parameters-table th:nth-child(2),
+  .service-parameters-table td:nth-child(2) {
+    width: 80px;
+  }
+
+  .service-parameters-table th:nth-child(3),
+  .service-parameters-table td:nth-child(3) {
+    width: 140px;
+  }
+
+  .add-endpoint-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 600px; /* Максимальная высота контента */
+    overflow-y: auto; /* Включить вертикальный скролл при необходимости */
+  }
+  
+  .close {
+    position: relative;
+    margin-left: 780px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .parameter {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px; /* Дополнительный отступ снизу */
+  }
+  
+  .parameter input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  
+  .parameter input[type="checkbox"] {
+    margin-right: 10px;
+    
+  }
+  .parameter select {
+    margin-right: 10px;
+    margin-left: 10px;
+    font-size: 14px;
+    width: 300px; /* Пример значения ширины */
+  }
+
+  .parameter textarea{
+    font-size: 14px;
+    height: 36px;
+    width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    resize: vertical;
+    scrollbar-width: none;
+  }
+  
+  
+  label {
+    display: block;
+  }
+
+  .textarea-container-description {
+    margin-top: 10px;
+    display: flex;
+    justify-content: left; /* Выравнивание по горизонтали */
+    align-items: center; /* Выравнивание по вертикали */
+    height: auto; /* Высота автоматически подстраивается под содержимое */
+  }
+  
+  .textarea-container-description textarea {
+    width: 32.5%; /* Занимает всю доступную ширину */
+    box-sizing: border-box; /* Учитывает границы и отступы внутри ширины */
+    margin-left: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .textarea-container-uri input{
+    margin-left: 10px; 
+    font-size: 16px;
+  }
+  
+  .add-param-button{
+    background-color: rgb(226, 222, 222);
+    color: rgb(35, 102, 18);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .add-param-button:hover, .add-endpoint-button-form:hover {
+    background-color: rgb(35, 102, 18);
+    color:rgb(226, 222, 222);
+  }
+
+  .remove-param-button{
+    background-color: rgb(255, 255, 255);
+    color: rgb(241, 10, 10);
+    font-size: 22px;
+    font-weight: bold;
+    padding: 2px 4px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .add-endpoint-button-form {
+    background-color: rgb(226, 222, 222);
+    color: rgb(35, 102, 18);
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto; 
+  }
+
+  .add-endpoint-button {
+    background-color: rgb(226, 222, 222);
+    color: rgb(35, 102, 18);
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 100px;
+    margin-top: 0px;
+  }
+
+  .add-endpoint-button:hover{
+    background-color: rgb(35, 102, 18);
+    color:rgb(226, 222, 222);
+  }
+  
+  .edit-parameter-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .edit-parameter {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* Примерный отступ между элементами */
+  }
+  
+  .edit-parameter label {
+    margin-right: 5px; /* Отступ между меткой и полем ввода */
+  }
+  
+  .edit-parameter button {
+    margin-left: 10px; /* Отступ между полем ввода и кнопкой */
+  }
+
+/* Стили для формы редактирования */
+.edit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-parameters-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 1000px;
+  width: 100%;
+  max-height: 80vh; /* Ограничение по высоте */
+  overflow-y: auto; /* Вертикальная прокрутка */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.edit-parameter-container {
+  margin-bottom: 10px;
+}
+
+.edit-parameter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-parameter label {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-parameter button {
+  margin-left: 10px;
+}
+
+.edit-service-point-name input{
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.edit-service-point-description{
+  margin-top: 10px;
+  display: flex;
+  justify-content: left; /* Выравнивание по горизонтали */
+  align-items: center; /* Выравнивание по вертикали */
+  height: auto; /* Высота автоматически подстраивается под содержимое */
+}
+
+.edit-service-point-description textarea{
+  width: 28%; /* Занимает всю доступную ширину */
+  box-sizing: border-box; /* Учитывает границы и отступы внутри ширины */
+  margin-left: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.edit-parameter-label-required{
+  margin-left: 128px;
+  margin-bottom: 7px;
+}
+
+.edit-parameter-label-description{
+  margin-left: 136px;
+  margin-bottom: 7px;
+}
+.edit-parameter-label-type{
+  margin-bottom: 7px;
+}
+.edit-parameter-label-name{
+  margin-bottom: 7px;
+}
+
+.edit-parameter input[type="text"]  {
+  font-size: 16px;
+  width: 180px; /* Пример ширины */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.edit-parameter input[type="checkbox"] {
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.edit-parameter select{
+  font-size: 16px;
+  width: 180px; /* Пример ширины */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.edit-parameter textarea {
+  font-size: 14px;
+  height: 36px;
+  width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  resize: vertical;
+  scrollbar-width: none;
+}
+
+.edit-parameters-add-button{
+  background-color: rgb(226, 222, 222);
+  color: rgb(35, 102, 18);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.parameters-save-button{
+  background-color: rgb(226, 222, 222);
+  color: rgb(35, 102, 18);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.edit-parameters-add-button:hover, .parameters-save-button:hover{
+  background-color: rgb(35, 102, 18);
+  color:rgb(226, 222, 222);
+}
+
+.edit-parameters-button{
+  background-color: rgb(226, 222, 222);
+  color: rgb(35, 102, 18);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 24px;
+}
+
+.edit-parameters-button:hover{
+  background-color: rgb(35, 102, 18);
+  color:rgb(226, 222, 222);
+}
+
+.delete-service-point-button{
+  background-color: rgb(226, 222, 222);
+  color: rgba(224, 25, 10, 0.9);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+.delete-service-point-button:hover{
+  background-color: rgba(224, 25, 10, 0.7);
+  color:rgb(226, 222, 222);
+}
+
+.edit-parameter button{
+  background-color: rgb(255, 255, 255);
+  color: rgb(241, 10, 10);
+  font-size: 22px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Повышение z-index для покрытия экрана */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 830px; /* Максимальная высота контента */
+  overflow-y: auto; /* Включить вертикальный скролл при необходимости */
+  position:relative;
+  
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Общие стили для формы */
+.service-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0%;
+}
+
+/* Стиль для групп ввода */
+.input-group {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.input-group input[type="text"],
+.input-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Стиль для кнопки отправки */
+.service-form button[type="submit"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #1e3985;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.service-form button[type="submit"]:hover {
+  background-color: #3e57a5;
+}
+.radio{
+  width: 100%;
+}
+/* Дополнительные стили для радиокнопок и OAuth */
+.radio .circle_group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.radio label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.radio input[type="radio"] {
+  margin-right: 5px;
+}
+.Oauth{
+  width: 100%;
+}
+.Oauth .input-group {
+  margin-bottom: 10px;
+  width: 100%;
+}
+.service-form button[type="button"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #898989;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: center;
+}
+
+.service-form button[type="button"]:hover {
+  background-color: #787878;
+}
+.buttons{
+  align-self: start;
+}
+
+.edit-service-button{
+  background-color: rgb(226, 222, 222);
+  color: rgb(35, 102, 18);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 130px;
+  height:38px;
+  margin-top: 20px;
+  margin-left: 20px;
+  
+}
+
+.edit-service-button:hover{
+  background-color: rgb(35, 102, 18);
+  color:rgb(226, 222, 222);
+}
+
+.modal-content-endpoint{
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 600px; /* Максимальная высота контента */
+  overflow-y: auto; /* Включить вертикальный скролл при необходимости */
+}

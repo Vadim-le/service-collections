@@ -1,0 +1,32 @@
+{
+  "name": "service-collections",
+  "version": "1.0.0",
+  "description": "service collections",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "server": "nodemon app.js",
+    "frontend": "npm run start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\""
+  },
+  "keywords": [
+    "services",
+    "collections",
+    "react"
+  ],
+  "author": "Lebedev Vadim <vadimka_lebedev_95@mail.ru>",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.3.11",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.5",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.23.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0"
+  }
+}
