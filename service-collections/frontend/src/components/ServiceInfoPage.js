@@ -5,6 +5,7 @@ import { ReactComponent as BackIcon } from './back.svg';
 import EditDeleteServiceForm from './EditDeleteServiceForm'; 
 import { useNavigate } from 'react-router-dom';
 
+
 function ServiceInfoPage() {
   const { serviceName } = useParams();
   const [serviceDisplayName, setServiceDisplayName] = useState(null);

@@ -1,6 +1,125 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './styles/ServiceCard.css'; // Import the CSS file
+
+const styles = {
+  container: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '20px',
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
+    marginBottom: '20px',
+    '@media (min-width: 768px)': {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+  },
+  searchContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    width: '100%',
+    '@media (min-width: 768px)': {
+      flexDirection: 'row',
+      width: 'auto',
+    },
+  },
+  input: {
+    flex: '1',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  },
+  select: {
+    flex: '1',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+    backgroundColor: 'white',
+  },
+  button: {
+    padding: '10px 20px',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: '#007bff',
+    color: 'white',
+    fontSize: '16px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    width: '100%',
+    '@media (min-width: 768px)': {
+      width: 'auto',
+    },
+    ':hover': {
+      backgroundColor: '#0056b3',
+    },
+  },
+  serviceGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    gap: '20px',
+  },
+  serviceCard: {
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    transition: 'box-shadow 0.3s',
+    ':hover': {
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    },
+  },
+  serviceImage: {
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover',
+  },
+  serviceContent: {
+    padding: '15px',
+  },
+  serviceName: {
+    fontSize: '18px',
+    fontWeight: 'bold',
+    marginBottom: '5px',
+  },
+  serviceSource: {
+    fontSize: '14px',
+    color: '#666',
+    marginBottom: '10px',
+  },
+  serviceDescription: {
+    fontSize: '14px',
+    color: '#333',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
+    maxWidth: '500px',
+    margin: '0 auto',
+    padding: '20px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+  },
+  fileUpload: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  imagePreview: {
+    width: '150px',
+    height: '150px',
+    objectFit: 'cover',
+    borderRadius: '4px',
+    marginBottom: '10px',
+    cursor: 'pointer',
+  },
+};
 
 function ServiceCard() {
   const [services, setServices] = useState([]);
@@ -16,13 +135,12 @@ function ServiceCard() {
     uri: '',
     description: ''
   });
-  const [imagePreview, setImagePreview] = useState('add_img.png'); // Pre-set image URL
+  const [imagePreview, setImagePreview] = useState('add_img.png');
 
   const fetchData = async () => {
     try {
       const response = await fetch('/api/service');
       const data = await response.json();
-      console.log('Received data:', data);
       setServices(data);
       setFilteredServices(data);
     } catch (error) {
@@ -32,6 +150,7 @@ function ServiceCard() {
 
   useEffect(() => {
     fetchData();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -46,53 +165,35 @@ function ServiceCard() {
     setFilteredServices(filteredByCategory);
   }, [searchTerm, services, selectedCategory]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch('/api/categories');
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  const handleChange = event => {
-    setSearchTerm(event.target.value);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
   };
 
-  const handleCategoryChange = event => {
-    setSelectedCategory(event.target.value);
-  };
+  const handleChange = event => setSearchTerm(event.target.value);
+
+  const handleCategoryChange = event => setSelectedCategory(event.target.value);
 
   const handleNewServiceChange = event => {
     const { name, value } = event.target;
-    setNewService(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setNewService(prevState => ({ ...prevState, [name]: value }));
   };
 
   const handleFileChange = event => {
     const file = event.target.files[0];
-    setNewService(prevState => ({
-      ...prevState,
-      image: file
-    }));
+    setNewService(prevState => ({ ...prevState, image: file }));
     setImagePreview(URL.createObjectURL(file));
   };
 
   const handleNewServiceSubmit = async event => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append('name', newService.name);
-    formData.append('categoryId', newService.category_id);
-    formData.append('image', newService.image);
-    formData.append('uri', newService.uri);
-    formData.append('description', newService.description);
+    Object.entries(newService).forEach(([key, value]) => formData.append(key, value));
   
     try {
       const response = await fetch('/api/services', {
@@ -101,21 +202,13 @@ function ServiceCard() {
       });
   
       if (response.ok) {
-        await fetchData(); // Fetch data from the server after successfully adding the new service
+        await fetchData();
         setShowForm(false);
-        setNewService({
-          name: '',
-          category_id: '',
-          image: '',
-          uri: '',
-          description: ''
-        });
+        setNewService({ name: '', category_id: '', image: '', uri: '', description: '' });
         setImagePreview('add_img.png');
       } else if (response.status === 409) {
-        // Conflict error
         const errorData = await response.json();
-        console.error('Error adding new service:', errorData.error);
-        alert(`Error: ${errorData.error}`); // Display error message to the user
+        alert(`Error: ${errorData.error}`);
       } else {
         console.error('Error adding new service:', response.statusText);
       }
@@ -123,49 +216,39 @@ function ServiceCard() {
       console.error('Error adding new service:', error);
     }
   };
-  
 
-  const getUniqueCategories = () => {
-    const uniqueCategories = new Set();
-    services.forEach(service => {
-      uniqueCategories.add(service.category_name);
-    });
-    return Array.from(uniqueCategories);
-  };
+  const getUniqueCategories = () => [...new Set(services.map(service => service.category_name))];
 
   return (
-    <div>
-      <div className="search-container">
-      <button className="add-service-button" onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Отменить' : 'Добавить сервис'}
-      </button>
-        <div className="option-container">
-          <select value={selectedCategory} onChange={handleCategoryChange}>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <div style={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Поиск..."
+            value={searchTerm}
+            onChange={handleChange}
+            style={styles.input}
+          />
+          <select value={selectedCategory} onChange={handleCategoryChange} style={styles.select}>
             <option value="">Все категории</option>
             {getUniqueCategories().map(category => (
-              <option key={category} value={category}>
-                {category}
-              </option>
+              <option key={category} value={category}>{category}</option>
             ))}
           </select>
         </div>
-        <input
-          type="text"
-          placeholder="Поиск..."
-          value={searchTerm}
-          onChange={handleChange}
-        />
+        <button style={styles.button} onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Отменить' : 'Добавить сервис'}
+        </button>
       </div>
 
-
-
       {showForm && (
-        <form className="service-form" onSubmit={handleNewServiceSubmit}>
-          <div className="file-upload-container">
+        <form style={styles.form} onSubmit={handleNewServiceSubmit}>
+          <div style={styles.fileUpload}>
             <img
               src={imagePreview}
               alt="Preview"
-              className="image-preview"
+              style={styles.imagePreview}
               onClick={() => document.getElementById('file-upload').click()}
             />
             <input
@@ -184,6 +267,7 @@ function ServiceCard() {
             value={newService.name}
             onChange={handleNewServiceChange}
             required
+            style={styles.input}
           />
           <textarea
             name="description"
@@ -191,9 +275,9 @@ function ServiceCard() {
             value={newService.description}
             onChange={handleNewServiceChange}
             required
+            style={{...styles.input, minHeight: '100px'}}
           />
           <select
-            className='category_id'
             name="category_id"
             value={newService.category_id}
             onChange={event => {
@@ -207,12 +291,11 @@ function ServiceCard() {
               }
             }}
             required
+            style={styles.select}
           >
             <option value="">Выберите категорию</option>
             {categories.map(category => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
+              <option key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
           <input
@@ -222,19 +305,22 @@ function ServiceCard() {
             value={newService.uri}
             onChange={handleNewServiceChange}
             required
+            style={styles.input}
           />
-          <button type="submit">Добавить</button>
+          <button type="submit" style={styles.button}>Добавить</button>
         </form>
       )}
 
-      <div className="service-card-container">
+      <div style={styles.serviceGrid}>
         {filteredServices.map(service => (
-          <Link key={service.id} to={`/services/${service.name}`} className="service-card-item">
-            <div>
-              <img src={service.image} alt={service.name} />
-              <h1 className="custom-h1">{service.name}</h1>
-              <h2 className="custom-h2">*{service.api_source}</h2>
-              <h3>{service.description}</h3>
+          <Link key={service.id} to={`/services/${service.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div style={styles.serviceCard}>
+              <img src={service.image} alt={service.name} style={styles.serviceImage} />
+              <div style={styles.serviceContent}>
+                <h2 style={styles.serviceName}>{service.name}</h2>
+                <p style={styles.serviceSource}>*{service.api_source}</p>
+                <p style={styles.serviceDescription}>{service.description}</p>
+              </div>
             </div>
           </Link>
         ))}
