@@ -16,7 +16,7 @@
 Если проект уже создан и необходимо обновить:
 - Загрузите все файлы проекта, кроме папки `frontend`, на сервер по пути: `/var/`
 
-# Шаг 4: Создание демона
+## Шаг 4: Создание демона
 Создайте файл демона: `sudo nano /etc/systemd/system/CollectionStart.service`
 
 Вставьте следующий код в файл:
@@ -37,10 +37,10 @@ WantedBy=multi-user.target<br>
 
 Этот демон будет запускать сервер с помощью команды `npm start` и перезапускать его в случае ошибки.
 
-# Шаг 5: Открыть порт в firewall
+## Шаг 5: Открыть порт в firewall
 Откройте порт, указанный в конфиге, в firewall: `sudo ufw allow 5111`
 
-# Шаг 6: Перезагрузить демон
+## Шаг 6: Перезагрузить демон
 1. Перезагрузите демон: `sudo systemctl daemon-reload`
 2. Перезапустите демон: `sudo systemctl restart CollectionStart`
 3. Проверьте статус демона: `sudo systemctl status CollectionStart`
