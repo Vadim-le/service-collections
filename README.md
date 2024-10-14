@@ -1,4 +1,4 @@
-Размещение коллекции на сервер
+# Размещение коллекции на сервер
 # Шаг 1: Забилдить фронтэнд
 Перед размещением коллекции на сервере необходимо забилдить фронтэнд. Это можно сделать с помощью команды `npm run build`. Эта команда создаст папку `build` в корне проекта, содержащую собранный фронтэнд.
 
@@ -20,20 +20,21 @@
 Создайте файл демона: `sudo nano /etc/systemd/system/CollectionStart.service`
 
 Вставьте следующий код в файл:
-  [Unit]
-  Description=NPM Start Daemon
-  
-  [Service]
-  Type=simple
-  ExecStart=/usr/bin/npm start
-  WorkingDirectory=/var/service_collection/serviceCollection
-  User=vadev
-  Group=trusted
-  Restart=always
-  RestartSec=3
-  
-  [Install]
-  WantedBy=multi-user.target
+[Unit]<br>
+Description=NPM Start Daemon<br>
+<br>
+[Service]<br>
+Type=simple<br>
+ExecStart=/usr/bin/npm start<br>
+WorkingDirectory=/var/service_collection/serviceCollection<br>
+User=vadev<br>
+Group=trusted<br>
+Restart=always<br>
+RestartSec=3<br>
+<br>
+[Install]<br>
+WantedBy=multi-user.target<br>
+
 Этот демон будет запускать сервер с помощью команды `npm start` и перезапускать его в случае ошибки.
 
 # Шаг 5: Открыть порт в firewall
