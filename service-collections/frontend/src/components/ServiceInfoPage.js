@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import './styles/ServiceInfoPage.css';
 import { ReactComponent as BackIcon } from './back.svg';
 import EditDeleteServiceForm from './EditDeleteServiceForm'; 
+import { useNavigate } from 'react-router-dom';
 
 function ServiceInfoPage() {
   const { serviceName } = useParams();
@@ -26,6 +27,7 @@ function ServiceInfoPage() {
   const [authorizationUrl, setAuthorizationUrl] = useState('');
   const [authorizationContentType, setAuthorizationContentType] = useState('');
   const [editFormOpen, setEditFormOpen] = useState(false); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchServiceInfo = async () => {
@@ -180,7 +182,7 @@ function ServiceInfoPage() {
     <div className="service-info-container">
       <div className="header">
         <div className="back-button">
-          <a href="http://localhost:3000/" onClick={() => window.history.back()}>
+          <a href="#" onClick={() => navigate(-1)}>
             <BackIcon className="back-icon" title="Назад" />
           </a>
           <h1 className="service-title">Service details</h1>

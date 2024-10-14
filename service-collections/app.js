@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('config');
 const fs = require('fs');
 const multer = require('multer'); // Подключение multer для загрузки файлов
-
+const path = require('path');
 const app = express();
 const PORT = config.get('port');
 
@@ -27,10 +27,6 @@ const pool = new Pool({
   database: config.get('pg_database'),
   password: config.get('pg_password'),
   port: config.get('pg_port')
-});
-
-app.get('/', (req, res) => {
-  res.send('Welcome to my API!');
 });
 
 app.get('/api/service', async (req, res) => {
@@ -430,5 +426,12 @@ app.delete('/api/service-delete/:serviceName', async (req, res) => {
   }
 });
 
+// Обслуживание статических файлов из папки build
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Обслуживание index.html для всех нераспознанных маршрутов
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
