@@ -588,99 +588,104 @@ function ServicePoint({ point, isExpanded, isActive, toggleExpand, updateService
             Delete service endpoint
           </button>
           {isEditing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-            <button className="float-right text-2xl" onClick={toggleEdit}>&times;</button>
-            <h3 className="text-xl font-bold mb-4">Edit service point</h3>
-            <div className="h-96 overflow-y-auto"> {/* Ограничение по высоте и прокручивающийся бар */}
-              <div className="space-y-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name:</label>
-                  <input 
-                    type="text" 
-                    value={editedName} 
-                    onChange={(e) => setEditedName(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Description:</label>
-                  <textarea 
-                    value={editedDescription} 
-                    onChange={(e) => setEditedDescription(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
-                </div>
-              </div>
-              <h3 className="text-lg font-medium mb-2">Edit parameters</h3>
-              <button 
-                type="button" 
-                onClick={handleAddParameter}
-                className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-              >
-                Add parameter
-              </button>
-              <div className="space-y-4">
-                {editedParameters.map((parameter, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={parameter.name}
-                      onChange={(e) => handleParameterChange(index, 'name', e.target.value)}
-                      required
-                      className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                    <input
-                      type="checkbox"
-                      checked={parameter.required}
-                      onChange={(e) => handleParameterChange(index, 'required', e.target.checked)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                    <select
-                      value={parameter.type}
-                      onChange={(e) => handleParameterChange(index, 'type', e.target.value)}
-                      required
-                      className="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border -blue-500 sm:text-sm"
-                    >
-                      <option value="">Select type</option>
-                      {parameterTypes.map(type => (
-                        <option key={type.id} value={type.type}>{type.type}</option>
-                      ))}
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="Description"
-                      value={parameter.description}
-                      onChange={(e) => handleParameterChange(index, 'description', e.target.value)}
-                      required
-                      className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
+            <form onSubmit={(e) => {
+              e.preventDefault(); // Предотвращаем стандартное поведение отправки формы
+              saveChanges().then(() => {
+                toast.success('Данные успешно сохранены!');
+                toggleEdit();
+              });
+            }}>
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+                  <button className="float-right text-2xl" onClick={toggleEdit}>&times;</button>
+                  <h3 className="text-xl font-bold mb-4">Edit service point</h3>
+                  <div className="h-96 overflow-y-auto"> {/* Ограничение по высоте и прокручивающийся бар */}
+                    <div className="space-y-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">Name:</label>
+                        <input 
+                          type="text" 
+                          value={editedName} 
+                          onChange={(e) => setEditedName(e.target.value)}
+                          required
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">Description:</label>
+                        <textarea 
+                          value={editedDescription} 
+                          onChange={(e) => setEditedDescription(e.target.value)}
+                          required
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">Edit parameters</h3>
                     <button 
                       type="button" 
-                      onClick={() => handleRemoveParameter(index) }
-                      className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      onClick={handleAddParameter}
+                      className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                     >
-                      &times;
+                      Add parameter
+                    </button>
+                    <div className="space-y-4">
+                      {editedParameters.map((parameter, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <input
+                            type="text"
+                            placeholder="Name"
+                            value={parameter.name}
+                            onChange={(e) => handleParameterChange(index, 'name', e.target.value)}
+                            required
+                            className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          />
+                          <input
+                            type="checkbox"
+                            checked={parameter.required}
+                            onChange={(e) => handleParameterChange(index, 'required', e.target.checked)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <select
+                            value={parameter.type}
+                            onChange={(e) => handleParameterChange(index, 'type', e.target.value)}
+                            required
+                            className="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            <option value="">Select type</option>
+                            {parameterTypes.map(type => (
+                              <option key={type.id} value={type.type}>{type.type}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="Description"
+                            value={parameter.description}
+                            onChange={(e) => handleParameterChange(index, 'description', e.target.value)}
+                            required
+                            className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          />
+                          <button 
+                            type="button" 
+                            onClick={() => handleRemoveParameter(index)}
+                            className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button 
+                      type="submit" // Кнопка для отправки формы
+                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                    >
+                      Save changes
                     </button>
                   </div>
-                ))}
+                </div>
               </div>
-              <button 
-                onClick={() => {
-                  saveChanges().then(() => {
-                    toast.success('Данные успешно сохранены!');
-                    toggleEdit();
-                  });
-                }}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-              >
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-        )}
+            </form>
+          )}
         </div>
       )}
     </li>
@@ -731,7 +736,7 @@ function AddEndpointModal({ onClose, onAdd }) {
       parameters
     };
     onAdd(newEndpoint);
-    toast.success('Эндпоинт успешно добавлен!');
+    toast.success('Эндпоинт успешно!');
   };
 
   return (
@@ -749,7 +754,7 @@ function AddEndpointModal({ onClose, onAdd }) {
               id="uri"
               value={uri} 
               onChange={handleUriChange} 
-              require
+              required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
