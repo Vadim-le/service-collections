@@ -1,9 +1,9 @@
 {
     "port": 3003,
-    "pg_user": "postgres",
+    "pg_user": "vadev",
     "pg_host": "localhost",
-    "pg_database": "stolbov",
-    "pg_password": "admin",
-    "pg_port": 5433
+    "pg_database": "epos",
+    "pg_password": "12345",
+    "pg_port": 9123
     
 }

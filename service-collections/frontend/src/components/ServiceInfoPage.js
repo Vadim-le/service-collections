@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import './styles/ServiceInfoPage.css';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as BackIcon } from './back.svg';
-import EditDeleteServiceForm from './EditDeleteServiceForm'; 
-import { useNavigate } from 'react-router-dom';
+import EditDeleteServiceForm from './EditDeleteServiceForm';
 
 
 function ServiceInfoPage() {
   const { serviceName } = useParams();
+  const navigate = useNavigate();
   const [serviceDisplayName, setServiceDisplayName] = useState(null);
   const [serviceDescription, setServiceDescription] = useState(null);
   const [servicePoints, setServicePoints] = useState([]);
@@ -27,8 +26,7 @@ function ServiceInfoPage() {
   const [scope, setScope] = useState('');
   const [authorizationUrl, setAuthorizationUrl] = useState('');
   const [authorizationContentType, setAuthorizationContentType] = useState('');
-  const [editFormOpen, setEditFormOpen] = useState(false); 
-  const navigate = useNavigate();
+  const [editFormOpen, setEditFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchServiceInfo = async () => {
@@ -180,38 +178,61 @@ function ServiceInfoPage() {
   };
 
   return (
-    <div className="service-info-container">
-      <div className="header">
-        <div className="back-button">
-          <a href="#" onClick={() => navigate(-1)}>
-            <BackIcon className="back-icon" title="Назад" />
-          </a>
-          <h1 className="service-title">Service details</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="flex items-center mb-4 md:mb-0">
+          <button onClick={() => navigate(-1)} className="mr-4 p-2 rounded-full hover:bg-gray-200 transition-colors">
+            <BackIcon className="w-6 h-6" title="Back" />
+          </button>
+          <h1 className="text-2xl font-bold">Service details</h1>
         </div>
-        <button className="edit-service-button" onClick={handleEditFormOpen}>Edit Service</button>
-        {editFormOpen && ( 
-          <EditDeleteServiceForm
-            serviceName={serviceName}     
-            initialData={{ serviceDisplayName, serviceDescription }}
-            onClose={handleEditFormClose}
-            onServiceUpdated={handleServiceUpdated}
-            onServiceDeleted={handleServiceDeleted}
-          />
-        )}
-        <button className="add-authorization-button" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Отменить' : 'Добавить авторизацию'}
-        </button>
-      </div>
-      <div className="container">
-        <div className="image-container">
-          <img src={serviceLogo} alt="Service" className="service-logo" />
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <button 
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            onClick={handleEditFormOpen}
+          >
+            Edit Service
+          </button>
+          <button 
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancel' : 'Add authorization'}
+          </button>
         </div>
-        <p className="service-name">{serviceDisplayName}</p>
       </div>
-      <p className="service-description">{serviceDescription}</p>
-      <h2 className="service-points-title">Service endpoints</h2>
-      <button className="add-endpoint-button" onClick={handleOpenModal}>Add new endpoint</button>
-      <ul className="service-points-list">
+
+      {editFormOpen && ( 
+        <EditDeleteServiceForm
+          serviceName={serviceName}     
+          initialData={{ serviceDisplayName, serviceDescription }}
+          onClose={handleEditFormClose}
+          onServiceUpdated={handleServiceUpdated}
+          onServiceDeleted={handleServiceDeleted}
+        />
+      )}
+
+      <div className="bg-white shadow rounded-lg p-6 mb-8">
+        <div className="flex items-center mb-4">
+          <div className="w-16 h-16 mr-4">
+            <img src={serviceLogo} alt="Service" className="w-full h-full object-cover rounded-full" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">{serviceDisplayName}</h2>
+            <p className="text-gray-600">{serviceDescription}</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 className="text-xl font-semibold mb-4">Service endpoints</h2>
+      <button 
+        className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+        onClick={handleOpenModal}
+      >
+        Add new endpoint
+      </button>
+
+      <ul className="space-y-4">
         {servicePoints.map((point, index) => (
           <ServicePoint
             key={index}
@@ -224,29 +245,31 @@ function ServiceInfoPage() {
           />
         ))}
       </ul>
+
       {isModalOpen && <AddEndpointModal onClose={handleCloseModal} onAdd={handleAddEndpoint} />}
 
       {showForm && (
-        <div className="modal">
-          <div className="modal-content">
-            <form className="service-form" onSubmit={handleNewServiceSubmit}>
-              <div className="input-group">
-                <label htmlFor="field3">Метод авторизации:</label><br />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <form className="space-y-4" onSubmit={handleNewServiceSubmit}>
+              <div>
+                <label htmlFor="field3" className="block text-sm font-medium text-gray-700">Authorization method:</label>
                 <select
                   id="Authchoice"
                   value={authMethod}
                   onChange={handleAuthChoiceChange}
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
-				 <option value="var1">No authorization</option>
+                  <option value="var1">No authorization</option>
                   <option value="var2">Service</option>
                   <option value="var3">Oauth</option>
                 </select>
               </div>
 
               {authMethod === 'var2' && (
-                <div className='radio' id='checkcurcle'>
-                  <div className='circle_group'>
-                    <label>
+                <div className='space-y-4'>
+                  <div className='flex items-center space-x-4'>
+                    <label className="flex items-center">
                       <input
                         required
                         type="radio"
@@ -254,10 +277,11 @@ function ServiceInfoPage() {
                         value="Header"
                         checked={authType === 'Header'}
                         onChange={handleAuthTypeChange}
+                        className="mr-2"
                       />
                       Bearer
                     </label>
-                    <label>
+                    <label className="flex items-center">
                       <input
                         required
                         type="radio"
@@ -265,101 +289,122 @@ function ServiceInfoPage() {
                         value="Query"
                         checked={authType === 'Query'}
                         onChange={handleAuthTypeChange}
+                        className="mr-2"
                       />
                       Query
                     </label>
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="param_name">Parameter name:</label><br />
+                  <div>
+                    <label htmlFor="param_name" className="block text-sm font-medium text-gray-700">Parameter name:</label>
                     <input
                       required
                       type="text"
                       id="param_name"
                       value={paramName}
                       onChange={(e) => setParamName(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="apikey">Service token / API key:</label><br />
+                  <div>
+                    <label htmlFor="apikey" className="block text-sm font-medium text-gray-700">Service token / API key:</label>
                     <input
                       required
                       type="text"
                       id="apikey"
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                 </div>
               )}
 
               {authMethod === 'var3' && (
-                <div className='Oauth' id='Oauth'>
-                  <div className="input-group">
-                    <label htmlFor="client_id">Client ID:</label><br />
+                <div className='space-y-4'>
+                  <div>
+                    <label htmlFor="client_id" className="block text-sm font-medium text-gray-700">Client ID:</label>
                     <input
                       required
                       type="text"
                       id="client_id"
                       value={clientId}
                       onChange={(e) => setClientId(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="client_secret">Client Secret:</label><br />
+                  <div>
+                    <label htmlFor="client_secret" className="block text-sm font-medium text-gray-700">Client Secret:</label>
                     <input
                       required
                       type="text"
                       id="client_secret"
                       value={clientSecret}
                       onChange={(e) => setClientSecret(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="client_url">Client URL:</label><br />
+                  <div>
+                    <label htmlFor="client_url" className="block text-sm font-medium text-gray-700">Client URL:</label>
                     <input
                       required
                       type="text"
                       id="client_url"
                       value={clientUrl}
                       onChange={(e) => setClientUrl(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="scope">Scope:</label><br />
+                  <div>
+                    <label htmlFor="scope" className="block text-sm font-medium text-gray-700">Scope:</label>
                     <input
                       required
                       type="text"
                       id="scope"
                       value={scope}
                       onChange={(e) => setScope(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="authorization_url">Authorization URL:</label><br />
+                  <div>
+                    <label htmlFor="authorization_url" className="block text-sm font-medium text-gray-700">Authorization URL:</label>
                     <input
                       required
                       type="text"
                       id="authorization_url"
                       value={authorizationUrl}
                       onChange={(e) => setAuthorizationUrl(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="authorization_content_type">Authorization Content-Type:</label><br />
+                  
+                  <div>
+                    <label htmlFor="authorization_content_type" className="block text-sm font-medium text-gray-700">Authorization Content-Type:</label>
                     <input
                       required
                       type="text"
                       id="authorization_content_type"
                       value={authorizationContentType}
                       onChange={(e) => setAuthorizationContentType(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                 </div>
               )}
 
-              <div className="buttons">
-                <button type="button" onClick={() => setShowForm(false)}>Назад</button>
-                <button type="submit">Добавить</button>
+              <div className="flex justify-end space-x-2">
+                <button 
+                  type="button" 
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Back
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Add
+                </button>
               </div>
             </form>
           </div>
@@ -369,10 +414,7 @@ function ServiceInfoPage() {
   );
 }
 
-
-
-
-function ServicePoint({ point, isExpanded, isActive, toggleExpand, updateServicePoint,  serviceName, setServicePoints }) {
+function ServicePoint({ point, isExpanded, isActive, toggleExpand, updateServicePoint, serviceName, setServicePoints }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedParameters, setEditedParameters] = useState(point.parameters || []);
   const [editedName, setEditedName] = useState(point.uri);
@@ -496,72 +538,132 @@ function ServicePoint({ point, isExpanded, isActive, toggleExpand, updateService
   }, []);
 
   return (
-    <li className="service-point">
-      <button className={`service-uri ${isActive ? 'active' : ''}`} onClick={toggleExpand}>
-        {point.uri}
+    <li className="bg-white shadow rounded-lg overflow-hidden">
+      <button 
+        className={`w-full text-left px-6 py-4 focus:outline-none ${isActive ? 'bg-blue-50' : ''}`} 
+        onClick={toggleExpand}
+      >
+        <span className="font-medium">{point.uri}</span>
       </button>
       {isExpanded && (
-        <div className="expanded-content">
-          <h3 className="service-point-description">{point.description}</h3>
-          <h3 className="service-parameters-title">Input parameters</h3>
-          <button onClick={toggleEdit} className='edit-parameters-button'>Edit parameters</button>
-          <table className="service-parameters-table">
-            <thead>
-              <tr>
-                <th className='service-parameters-table-column'>Parameter name</th>
-                <th className='service-parameters-table-column'>Required</th>
-                <th className='service-parameters-table-column'>Parameter type</th>
-                <th className='service-parameters-table-column'>Parameter description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {editedParameters.map((parameter, index) => (
-                <tr key={index} className="service-parameter">
-                  <td className="parameter-name">{parameter.name}</td>
-                  <td className="parameter-required">{parameter.required ? "Required" : "Optional"}</td>
-                  <td className="parameter-type">{parameter.type}</td>
-                  <td className="parameter-description">{parameter.description}</td>
+        <div className="px-6 py-4">
+          <h3 className="text-lg font-medium mb-2">{point.description}</h3>
+          <h4 className="text-md font-medium mb-2">Input parameters</h4>
+          <button 
+            onClick={toggleEdit}
+            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Edit parameters
+          </button>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parameter name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Required</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parameter type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parameter description</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <button onClick={handleRemoveServicePoint} className='delete-service-point-button'>Delete service endpoint</button>
-          {isEditing && (
-            <div className="edit-overlay">
-              <div className="edit-parameters-form">
-                <button className="close-button" onClick={toggleEdit}>&times;</button>
-                <h3>Edit service point</h3>
-                <div className="edit-endpoint">
-                  <label className='edit-service-point-name'>
-                    Name: <input type="text" value={editedName} onChange={(e) => setEditedName(e.target.value)} />
-                  </label>
-                  <label className='edit-service-point-description'>
-                    Description: <textarea type="text" value={editedDescription} onChange={(e) => setEditedDescription(e.target.value)} />
-                  </label>
-                </div>
-                <h3>Edit parameters</h3>
-                <button className='edit-parameters-add-button' type="button" onClick={handleAddParameter}>Add parameter</button>
-                <div className="edit-parameter">
-                  <label className='edit-parameter-label-name'>Name: </label>
-                  <label className='edit-parameter-label-required'>Required:</label>
-                  <label className='edit-parameter-label-type'>Type:</label>
-                  <label className='edit-parameter-label-description'>Description:</label>
-                </div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {editedParameters.map((parameter, index) => (
-                  <div key={index} className="edit-parameter-container">
-                    <div className="edit-parameter">
-                      <input type="text" value={parameter.name} onChange={(e) => handleParameterChange(index, 'name', e.target.value)} />
-                      <input type="checkbox" checked={parameter.required} onChange={(e) => handleParameterChange(index, 'required', e.target.checked)} />
-                      <select value={parameter.type} onChange={(e) => handleParameterChange(index, 'type', e.target.value)}>
-                        <option value="">Select type</option>
-                        {parameterTypes.map(type => (<option key={type.id} value={type.type}>{type.type}</option>))}
-                      </select>
-                      <textarea type="text" value={parameter.description} onChange={(e) => handleParameterChange(index, 'description', e.target.value)} />
-                      <button type="button" onClick={() => handleRemoveParameter(index)}>&times;</button>
-                    </div>
-                  </div>
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">{parameter.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{parameter.required ? "Required" : "Optional"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{parameter.type}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{parameter.description}</td>
+                  </tr>
                 ))}
-                <button className='parameters-save-button' onClick={saveChanges}>Save changes</button>
+              </tbody>
+            </table>
+          </div>
+          <button 
+            onClick={handleRemoveServicePoint}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            Delete service endpoint
+          </button>
+          {isEditing && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+                <button className="float-right text-2xl" onClick={toggleEdit}>&times;</button>
+                <h3 className="text-xl font-bold mb-4">Edit service point</h3>
+                <div className="space-y-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Name:</label>
+                    <input 
+                      type="text" 
+                      value={editedName} 
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Description:</label>
+                    <textarea 
+                      value={editedDescription} 
+                      onChange={(e) => setEditedDescription(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
+                <h3 className="text-lg font-medium mb-2">Edit parameters</h3>
+                <button 
+                  type="button" 
+                  onClick={handleAddParameter}
+                  className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                  Add parameter
+                </button>
+                <div className="space-y-4">
+                  {editedParameters.map((parameter, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        value={parameter.name}
+                        onChange={(e) => handleParameterChange(index, 'name', e.target.value)}
+                        placeholder="Name"
+                        className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
+                      <input
+                        type="checkbox"
+                        checked={parameter.required}
+                        onChange={(e) => handleParameterChange(index, 'required', e.target.checked)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <select
+                        value={parameter.type}
+                        onChange={(e) => handleParameterChange(index, 'type', e.target.value)}
+                        className="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select type</option>
+                        {parameterTypes.map(type => (
+                          <option key={type.id} value={type.type}>{type.type}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        value={parameter.description}
+                        onChange={(e) => handleParameterChange(index, 'description', e.target.value)}
+                        placeholder="Description"
+                        className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => handleRemoveParameter(index)}
+                        className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button 
+                  onClick={saveChanges}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  Save changes
+                </button>
               </div>
             </div>
           )}
@@ -570,11 +672,6 @@ function ServicePoint({ point, isExpanded, isActive, toggleExpand, updateService
     </li>
   );
 }
-
-
-
-
-
 
 function AddEndpointModal({ onClose, onAdd }) {
   const [uri, setUri] = useState('');
@@ -623,64 +720,97 @@ function AddEndpointModal({ onClose, onAdd }) {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content-endpoint">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>Add New Endpoint</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            <div class="textarea-container-uri">  
-            URI:
-            <input type="text" value={uri} onChange={handleUriChange} required />
-            </div>
-          </label>
-          <label>
-            <div class="textarea-container-description">
-            Description:
-            <textarea value={description} onChange={handleDescriptionChange} required />
-            </div>
-          </label>
-          <h3>Parameters</h3>
-          <button type="button" onClick={handleAddParameter} className="add-param-button">Add parameter</button>
-          {parameters.map((parameter, index) => (
-            <div key={index} className="parameter">
-              <input
-                type="text"
-                placeholder="Name"
-                value={parameter.name}
-                onChange={(e) => handleParameterChange(index, 'name', e.target.value)}
-                required
-              />
-              <input
-                type="checkbox"
-                checked={parameter.required}
-                onChange={(e) => handleParameterChange(index, 'required', e.target.checked)}
-              /> Required
-              <select
-                type="select"
-                value={parameter.type}
-                onChange={(e) => handleParameterChange(index, 'type', e.target.value)}
-                required
-              >
-                <option value="" disabled>Select type</option>
-                {parameterTypes.map((type, i) => (
-                  <option key={i} value={type.type}>{type.type}</option>
-                ))}
-              </select>
-              <textarea
-                type="text"
-                placeholder="Description"
-                value={parameter.description}
-                onChange={(e) => handleParameterChange(index, 'description', e.target.value)}
-                required
-              />
-              <button type="button" onClick={() => handleRemoveParameter(index)} className="remove-param-button">&times;</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Add New Endpoint</h2>
+          <button onClick={onClose} className="text-2xl">&times;</button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="uri" className="block text-sm font-medium text-gray-700">URI:</label>
+            <input 
+              type="text" 
+              id="uri"
+              value={uri} 
+              onChange={handleUriChange} 
+              require
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description:</label>
+            <textarea 
+              id="description"
+              value={description} 
+              onChange={handleDescriptionChange} 
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            />
+          </div>
+          <div>
+            <h3 className="text-lg font-medium mb-2">Parameters</h3>
+            <button 
+              type="button" 
+              onClick={handleAddParameter}
+              className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            >
+              Add parameter
+            </button>
+            {parameters.map((parameter, index) => (
+              <div key={index} className="flex items-center space-x-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={parameter.name}
+                  onChange={(e) => handleParameterChange(index, 'name', e.target.value)}
+                  required
+                  className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                <input
+                  type="checkbox"
+                  checked={parameter.required}
+                  onChange={(e) => handleParameterChange(index, 'required', e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <select
+                  value={parameter.type}
+                  onChange={(e) => handleParameterChange(index, 'type', e.target.value)}
+                  required
+                  className="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="" disabled>Select type</option>
+                  {parameterTypes.map((type, i) => (
+                    <option key={i} value={type.type}>{type.type}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={parameter.description}
+                  onChange={(e) => handleParameterChange(index, 'description', e.target.value)}
+                  required
+                  className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                <button 
+                  type="button" 
+                  onClick={() => handleRemoveParameter(index)}
+                  className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  &times;
+                </button>
               </div>
             ))}
-            <button type="submit" className='add-endpoint-button-form'>Add Endpoint</button>
-          </form>
-        </div>
+          </div>
+          <button 
+            type="submit"
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Add Endpoint
+          </button>
+        </form>
       </div>
+    </div>
   );
 }
 
