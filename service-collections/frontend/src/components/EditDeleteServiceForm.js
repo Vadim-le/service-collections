@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 function EditDeleteServiceForm({ serviceName, initialData, onClose, onServiceUpdated, onServiceDeleted }) {
   const [serviceDisplayName, setServiceDisplayName] = useState(initialData.serviceDisplayName || '');
@@ -35,6 +36,7 @@ function EditDeleteServiceForm({ serviceName, initialData, onClose, onServiceUpd
       setServiceDisplayName(updatedService.name);
       onClose();
       window.location.href = `/services/${updatedService.name}`;
+      toast.success('Данные о сервисе успешно обновлены!'); // добавлен тост
     } catch (error) {
       console.error('Error updating service:', error);
       setError('Failed to update service. Please try again.');
@@ -62,6 +64,7 @@ function EditDeleteServiceForm({ serviceName, initialData, onClose, onServiceUpd
 
         onServiceDeleted(serviceName);
         onClose();
+        toast.success('Сервис успешно удален!'); // добавлен тост
       } catch (error) {
         console.error('Error deleting service:', error);
         setError('Failed to delete service. Please try again.');
@@ -70,7 +73,6 @@ function EditDeleteServiceForm({ serviceName, initialData, onClose, onServiceUpd
       }
     }
   };
-
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -127,6 +129,7 @@ function EditDeleteServiceForm({ serviceName, initialData, onClose, onServiceUpd
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Saving...' : 'Save'}
+                
               </button>
               <button
                 type="button"

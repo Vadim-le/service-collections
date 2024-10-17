@@ -74,8 +74,11 @@ app.get('/api/services/:serviceName', async (req, res) => {
     const servicePoints = await cursor.query('SELECT uri, description, id FROM services.service_points WHERE service_id = $1', [serviceId]);
 
     const serviceParameters = await Promise.all(servicePoints.rows.map(async (point) => {
-      const parameters = await cursor.query(`SELECT sp.id, sp.name, sp.description, sp.required, ct.type FROM services.service_parameters sp JOIN components.type 
-          ct ON sp.type_id = ct.id WHERE sp.service_point_id = $1`, [point.id]);
+      const parameters = await cursor.query(`
+        SELECT sp.id, sp.name, sp.description, sp.required, ct.type 
+        FROM services.service_parameters sp 
+        LEFT JOIN components.type ct ON sp.type_id = ct.id 
+        WHERE sp.service_point_id = $1`, [point.id]);
         console.log(parameters);
       return {
         ...point,
